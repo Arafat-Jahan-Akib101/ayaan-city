@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayaan City Builders - Preview</title>
+  
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // --- Inline SVG Icons ---
+    const IconHome = () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>;
+    const IconBuilding = () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>;
+    const IconTree = () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.8 1.7H17Z"></path><path d="M12 22v-3"></path></svg>;
+    const IconShield = () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>;
+    const IconCheck = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
+    const IconPhone = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
+    const IconMapPin = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+
+    // --- Components ---
+    const Navbar = () => (
+      <nav className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-[#004a99] rounded flex items-center justify-center text-white font-bold text-xl">AC</div>
+            <div className="flex flex-col">
+              <span className="text-[#004a99] font-bold leading-none text-xl">AYAAN CITY</span>
+              <span className="text-[10px] text-gray-500 font-bold tracking-tighter">BUILDERS LAND DEVELOPMENT LTD.</span>
+            </div>
+          </div>
+          <div className="hidden md:flex gap-8 text-[#004a99] font-semibold">
+            <a href="#home" className="hover:text-[#28a745] transition">Home</a>
+            <a href="#services" className="hover:text-[#28a745] transition">Services</a>
+            <a href="#contact" className="hover:text-[#28a745] transition">Contact</a>
+          </div>
+          <a href="tel:01912469308" className="bg-[#28a745] text-white px-6 py-2.5 rounded-lg font-bold hover:bg-green-700 transition shadow-lg shadow-green-200">
+            Call Now
+          </a>
+        </div>
+      </nav>
+    );
+
+    const Hero = () => (
+      <section id="home" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-900">
+        <div className="absolute inset-0 opacity-40 bg-center bg-cover" style={{backgroundImage: "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop')"}}></div>
+        <div className="relative max-w-7xl mx-auto px-4 text-white">
+          <div className="max-w-3xl">
+            <h2 className="text-[#28a745] font-bold tracking-widest mb-4 flex items-center gap-2">
+              <span className="h-px w-8 bg-[#28a745]"></span> BUILDING TODAY
+            </h2>
+            <h1 className="text-5xl lg:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg">
+              For a Better <span className="text-[#c5a059]">Tomorrow</span>
+            </h1>
+            <p className="text-xl text-gray-100 mb-10 leading-relaxed border-l-4 border-[#28a745] pl-6 drop-shadow">
+              Making Dreams With Confidence. 100% Legal Residential, Commercial, and Land Development in Dhaka.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button className="bg-[#004a99] hover:bg-blue-800 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition border border-[#004a99]">
+                Explore Plots
+              </button>
+              <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-xl font-bold text-lg transition">
+                Our Projects
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    const Services = () => {
+      const items = [
+        { title: "Residential", icon: <IconHome />, desc: "Safe and secure residential living spaces for families." },
+        { title: "Commercial", icon: <IconBuilding />, desc: "Prime commercial locations designed for business growth." },
+        { title: "Land Development", icon: <IconTree />, desc: "Professionally mapped land with complete legal vetting." },
+        { title: "Construction", icon: <IconShield />, desc: "High-quality engineering with modern architectural design." }
+      ];
+      return (
+        <section id="services" className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-16">
+              <h3 className="text-[#004a99] text-4xl font-black mb-4">Our Services</h3>
+              <p className="text-gray-500 max-w-xl mx-auto italic text-lg">বিশ্বস্ততার সাথে গড়ি, আপনার স্বপ্নের ভবিষ্যৎ</p>
+            </div>
+            <div className="grid md:grid-cols-4 gap-6">
+              {items.map((item, i) => (
+                <div key={i} className="p-8 border border-gray-100 rounded-2xl bg-gray-50 hover:bg-[#004a99] hover:text-white group transition-all duration-300 shadow-sm hover:shadow-xl">
+                  <div className="text-[#004a99] group-hover:text-[#c5a059] mb-6">{item.icon}</div>
+                  <h4 className="text-xl font-bold mb-3">{item.title}</h4>
+                  <p className="text-sm opacity-80 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const Feature = () => (
+      <section className="py-20 bg-[#004a99] text-white">
+        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1000&auto=format&fit=crop" alt="Modern Building" className="rounded-3xl shadow-2xl border-8 border-white/10" />
+          </div>
+          <div>
+            <h3 className="text-4xl font-bold mb-8 font-serif italic text-[#c5a059]">"Making Dreams With Confidence"</h3>
+            <div className="space-y-6">
+              {[
+                "100% Legal Documentation",
+                "Modern Urban Planning",
+                "Trusted by 1000+ Clients",
+                "Prime Locations in Dhaka"
+              ].map((text, i) => (
+                <div key={i} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                  <IconCheck />
+                  <span className="text-lg font-medium">{text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    const Contact = () => (
+      <section id="contact" className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-white rounded-[40px] p-8 lg:p-16 flex flex-col lg:flex-row gap-12 shadow-xl border border-gray-100">
+            <div className="lg:w-1/3">
+              <h3 className="text-3xl font-bold text-[#004a99] mb-8">Get In Touch</h3>
+              <div className="space-y-8">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-green-50 rounded-full text-[#28a745]"><IconPhone /></div>
+                  <div>
+                    <p className="font-bold text-gray-900 mb-1">Call Us Today</p>
+                    <p className="text-gray-600 font-medium">01912469308</p>
+                    <p className="text-gray-600 font-medium">01635594194</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-blue-50 rounded-full text-[#004a99]"><IconMapPin /></div>
+                  <div>
+                    <p className="font-bold text-gray-900 mb-1">Visit Office</p>
+                    <p className="text-gray-600 font-medium">Dhaka, Bangladesh</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="lg:w-2/3">
+              <form className="grid md:grid-cols-2 gap-4" onSubmit={(e) => e.preventDefault()}>
+                <input type="text" placeholder="Full Name" className="p-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-[#004a99] focus:ring-1 focus:ring-[#004a99] transition" />
+                <input type="email" placeholder="Email Address" className="p-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-[#004a99] focus:ring-1 focus:ring-[#004a99] transition" />
+                <textarea placeholder="How can we help you build your dream?" className="p-4 rounded-xl border border-gray-200 bg-gray-50 md:col-span-2 h-40 focus:outline-none focus:border-[#004a99] focus:ring-1 focus:ring-[#004a99] transition"></textarea>
+                <button className="bg-[#004a99] text-white p-4 rounded-xl font-bold hover:bg-blue-800 transition md:col-span-2 shadow-lg shadow-blue-900/20">Send Message</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    const App = () => (
+      <div className="font-sans text-gray-800">
+        <Navbar />
+        <Hero />
+        <Services />
+        <Feature />
+        <Contact />
+        <footer className="bg-[#004a99] text-white py-8 text-center text-sm border-t border-white/20">
+          <p>© 2026 Ayaan City Builders Land Development Ltd. All rights reserved.</p>
+        </footer>
+      </div>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
